@@ -109,7 +109,8 @@ func UpdateHtmlContent(id int, data *Article) int {
 	var maps = make(map[string]interface{})
 	maps["desc"] = data.Desc
 	maps["html_content"] = data.HTMLContent
-	err = db.Model(&Article{}).Where("id = ?", id).Select("html_content", "desc").Updates(maps).Error
+	// 防止updateat被更新
+	err = db.Model(&Article{}).Where("id = ?", id).UpdateColumns(maps).Error
 	if err != nil {
 		return errmsg.ERROR
 	}
