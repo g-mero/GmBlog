@@ -63,6 +63,7 @@ func GithubLogin(c *gin.Context) {
 			"info":   "服务器未开启github认证",
 			"status": 500,
 		})
+		return
 	}
 
 	var accessToken = ""
