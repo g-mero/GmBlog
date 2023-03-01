@@ -24,16 +24,21 @@ type OutSettings struct {
 var initSettings = []Settings{
 	{ID: 1, Name: "base_settings", Content: jsonString(map[string]string{
 		"site_name":        "Gmero's Blog",
-		"site_url":         "",
-		"site_logo":        "",
-		"site_username":    "",
-		"site_user_avatar": "",
-		"site_user_desc":   "",
-		"site_notice":      "",
+		"site_url":         "https://www.gmero.com",
+		"site_logo":        "/assets/img/logo.svg",
+		"site_username":    "GmBlog",
+		"site_user_avatar": "https://avatars.githubusercontent.com/u/0",
+		"site_user_desc":   "Hello world",
+		"site_notice":      "GmBlog欢迎你",
 	}), Role: "base"},
 	{ID: 2, Name: "seo_settings", Content: jsonString(map[string]string{
 		"seo_desc":     "a blog",
 		"seo_keywords": "blog,some",
+		"seo_footer": `<div class="clearfix px-1"><div class="float-end">
+		<a href="https://www.gmero.com" data-bs-toggle="tooltip" data-bs-placement="top"
+		title="Gmero'blog" target="_blank"><img data-src="https://img.shields.io/badge/Powered-Gmero-brightgreen" alt="" class="lazy-load" />
+		</a>
+		</div></div>`,
 	}), Role: "base"},
 	{ID: 3, Name: "art_settings", Content: jsonString(map[string]string{
 		"art_recommend": "",
