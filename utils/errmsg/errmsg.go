@@ -1,0 +1,66 @@
+package errmsg
+
+const (
+	SUCCES = 200
+	ERROR  = 500
+
+	// code=1000 for user's error
+	ERROR_USERNAME_USED    = 1001
+	ERROR_PASSWORD_WRONG   = 1002
+	ERROR_USER_NOT_EXIST   = 1003
+	ERROR_USER_NOT_RIGHT   = 1008
+	ERROR_TOKEN_EXIST      = 1004
+	ERROR_TOKEN_RUNTIME    = 1005
+	ERROR_TOKEN_WRONG      = 1006
+	ERROR_TOKEN_TYPE_WRONG = 1007
+	// code=2000 for category
+	ERROR_CATENAME_USED  = 2001
+	ERROR_CATE_NOT_EXIST = 2002
+	ERROR_CATE_HAS_ZORO  = 2003
+	// code=3000 for article
+	ERROR_ART_NOT_EXIST = 3001
+	// code=4000 for others
+	ERROR_JSON_DECODE   = 4001
+	ERROR_REQUEST       = 4002
+	ERROR_PARAM_ILLEGAL = 4003
+	// code=5000 for comments
+	ERROR_CANT_FIND_TAR_ART     = 5001
+	ERROR_CANT_FIND_TAR_COMMENT = 5002
+	ERROR_CANT_FIND_TAR_USER    = 5003
+
+	ERROR_CMT_CONTENT_ILLEGAL = 5100
+)
+
+var codeMsg = map[int]string{
+	SUCCES: "OK",
+	ERROR:  "FAIL",
+
+	ERROR_USERNAME_USED:    "用户名已存在",
+	ERROR_PASSWORD_WRONG:   "密码错误",
+	ERROR_USER_NOT_EXIST:   "用户不存在",
+	ERROR_USER_NOT_RIGHT:   "用户无权限",
+	ERROR_TOKEN_EXIST:      "TOKEN不存在",
+	ERROR_TOKEN_RUNTIME:    "TOKEN已过期",
+	ERROR_TOKEN_WRONG:      "TOKEN不正确",
+	ERROR_TOKEN_TYPE_WRONG: "TOKEN格式错误",
+
+	ERROR_CATENAME_USED:  "分类已存在",
+	ERROR_CATE_NOT_EXIST: "分类不存在",
+	ERROR_CATE_HAS_ZORO:  "分类下没有符合要求的文章",
+
+	ERROR_ART_NOT_EXIST: "文章不存在",
+
+	ERROR_JSON_DECODE:   "JSON转换失败",
+	ERROR_REQUEST:       "服务器发送的远程请求出错",
+	ERROR_PARAM_ILLEGAL: "请求参数有误，请检查",
+
+	ERROR_CANT_FIND_TAR_ART:     "没有找到目标文章",
+	ERROR_CANT_FIND_TAR_COMMENT: "没有找到目标评论",
+	ERROR_CANT_FIND_TAR_USER:    "没有找到目标用户",
+
+	ERROR_CMT_CONTENT_ILLEGAL: "评论内容不合法",
+}
+
+func GetErrMsg(code int) string {
+	return codeMsg[code]
+}

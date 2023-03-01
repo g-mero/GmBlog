@@ -1,0 +1,13 @@
+*.exe
+/tmp/
+/web/theme/default/assets/js/ts
+*.bat
+*.scss
+tsconfig.json
+*.ts
+*.js
+!*.min.js
+*.toml
+gmeroblog
+data.sql3db
+.prettierrc

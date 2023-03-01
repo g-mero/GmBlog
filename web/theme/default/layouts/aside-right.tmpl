@@ -1,0 +1,51 @@
+{{ define "sider-article-item"}}
+<div class="sider-article-item rounded shadow-sm p-1">
+    <a href="#">
+        <div class="row">
+            <div class="col-3 align-self-center">
+                <img src="/assets/img/smallart/{{.}}.webp" class="img-fluid rounded-start" alt="..." />
+
+            </div>
+            <div class="col-9 align-self-center">
+                <span class="card-text text-truncate d-inline-block">This is a wider </span>
+            </div>
+        </div>
+    </a>
+</div>
+{{ end }}
+
+{{ define "sider-article-recomment"}}
+<div id="recommed-articles">
+    <h4 class="mb-3">推荐文章</h4>
+    <div class="border-1">
+        {{range (IntArray 5)}}
+        {{template "sider-article-item" .}}
+        {{end}}
+    </div>
+</div>
+{{ end }}
+
+{{ define "sider-notice"}}
+<div class="sider-notice mb-1">
+    <h4 class="mb-3">公告</h4>
+    <div class="notice-content p-1 bg-second-color shadow-sm rounded">
+        {{.}}
+    </div>
+</div>
+{{ end }}
+
+
+
+{{ define "aside-right" }}
+<div class="bg-main-color h-100 shadow-sm w-100 right-aside rounded-top p-3">
+    {{template "sider-notice" .SITE.site_notice}}
+    <div class="article-toc mt-3 position-sticky d-none" style="top:100px">
+        <div class="divider"></div>
+        <h4 class="mb-1 mt-2"><i class="bi bi-hand-thumbs-up"></i>
+            文章目录</h4>
+        <div id="art-toc" class="bg-second-color shadow-sm rounded mt-2 p-2 list-unstyled overflow-auto"
+            style="max-height: 250px;">
+        </div>
+    </div>
+</div>
+{{end}}

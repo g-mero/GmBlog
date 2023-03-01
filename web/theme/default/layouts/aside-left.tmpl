@@ -1,0 +1,90 @@
+{{define "sidemenu"}}
+
+{{if .Children}}
+{{ template "sidewithchild" .}}
+{{else if eq .Role 0}}
+{{template "sidewithto" .}}
+{{end}}
+
+{{end}}
+
+
+
+{{define "sidewithto"}}
+<li class="aside-menu-item rounded" id="aside-cate-{{.Slug}}">
+  <a href="/category/{{.Slug}}">
+    {{.Name}}<span class="badge cate-total-badge rounded-pill float-end">{{.Total}}</span>
+  </a>
+</li>
+{{end}}
+
+
+{{ define "sidewithchild"}}
+<li class="mb-1">
+  <button class="text-start aside-menu-item collapsed rounded" data-bs-toggle="collapse"
+    data-bs-target="#cate-child-{{.ID}}">
+    {{.Name}}
+    <i class="menu-icon-arrow"></i>
+  </button>
+  <div class="collapse bg-second-color" id="cate-child-{{.ID}}" data-bs-parent="#cate-child-{{.GroupId}}">
+    <ul class="small p-2">
+      {{range .Children}} {{template "sidemenu" .}} {{end}}
+    </ul>
+  </div>
+</li>
+{{end}}
+
+
+
+{{ define "aside-left" }}
+<div class="bg-main-color w-100 left-aside p-3 shadow-sm overflow-hidden">
+  <div class="avatar-area">
+    <a class="avatar" href="#">
+      <img src='{{.SITE.site_user_avatar}}' class="rounded-circle mx-auto d-block shadow" style="max-width: 50%"
+        alt="" />
+    </a>
+    <p class="text-center p-1 m-0">{{.SITE.site_username}}</p>
+    <p class="text-center text-black-50 p-1" style="font-size: 0.8rem">
+      {{.SITE.site_user_desc }}
+    </p>
+  </div>
+  <div class="divider"></div>
+  <div class="rounded justy-menu" id="menu">
+    <ul class="ps-0">
+      <li class="small mb-2">导航</li>
+      <li class="aside-menu-item rounded" id="aside-item-home">
+        <a href="/"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+              fill="currentColor" viewBox="0 0 16 16">
+              <path
+                d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146ZM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5Z" />
+            </svg></span>
+          首页</a>
+      </li>
+    </ul>
+    <div class="divider"></div>
+    <ul class="ps-0">
+      <li class="small mb-2">功能</li>
+      <li class="mb-1">
+        <button type="button" class="text-start aside-menu-item collapsed rounded" data-bs-toggle="collapse"
+          data-bs-target="#cate-child-0">
+          <span class="menu-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16">
+              <path
+                d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z" />
+            </svg>
+          </span>
+          分类
+          <i class="menu-icon-arrow"></i></button>
+        <div class="collapse bg-second-color" id="cate-child-0" data-bs-parent="#menu">
+          <ul class="small p-2">
+            {{range CateTree}}
+            {{template "sidemenu" .}}
+            {{end}}
+          </ul>
+        </div>
+
+      </li>
+    </ul>
+  </div>
+</div>
+{{ end }}

@@ -1,0 +1,7 @@
+{
+    "app_mode": "debug",
+    "port": ":3090",
+    "jwt_key": "2a3h2h1x",
+    "db_file": "data/data.sql3db",
+    "local_admin": true
+}
