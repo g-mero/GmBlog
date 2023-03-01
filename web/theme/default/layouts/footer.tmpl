@@ -1,14 +1,5 @@
 {{ define "footer" }}
 <footer class="bg-gray-200">
-    <div class="clearfix px-1">
-        <div class="float-start"><a href="https://beian.miit.gov.cn/" target="_blank"><img
-                    data-src="https://img.shields.io/badge/%E7%9A%96ICP%E5%A4%87-20010301%E5%8F%B7-blue" alt=""
-                    class="lazy-load"></div></a>
-        <div class="float-end"><a href="https://www.gmero.com" data-bs-toggle="tooltip" data-bs-placement="top"
-                title="Gmero'blog" target="_blank">
-                <img data-src="https://img.shields.io/badge/Powered-Gmero-brightgreen" alt="" class="lazy-load" />
-            </a></div>
-
-    </div>
+    {{STH .SITE.seo_footer}}
 </footer>
 {{end}}
