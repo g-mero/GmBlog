@@ -9,5 +9,5 @@ tsconfig.json
 !*.min.js
 *.toml
 gmeroblog
-data.sql3db
+*.sql3db
 .prettierrc
