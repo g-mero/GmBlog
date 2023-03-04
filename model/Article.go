@@ -37,6 +37,10 @@ type cate struct {
 
 // create article
 func CreateArt(data *Article) int {
+	if data.Title == "" || data.Content == "" || data.Cid <= 0 {
+		return errmsg.ERROR
+	}
+
 	data.TextCount = len([]rune(data.Content))
 	data.Sees = 0
 	err := db.Create(&data).Error

@@ -39,6 +39,7 @@ var initSettings = []Settings{
 		title="Gmero'blog" target="_blank"><img data-src="https://img.shields.io/badge/Powered-Gmero-brightgreen" alt="" class="lazy-load" />
 		</a>
 		</div></div>`,
+		"seo_cdn": "",
 	}), Role: "base"},
 	{ID: 3, Name: "art_settings", Content: jsonString(map[string]string{
 		"art_recommend": "",

@@ -38,16 +38,7 @@ func GetSingleCate(c *gin.Context) {
 
 // search Category
 func GetCate(c *gin.Context) {
-	pageSize, _ := strconv.Atoi(c.Query("pagesize"))
-	pageNum, _ := strconv.Atoi(c.Query("pagenum"))
-
-	if pageSize == 0 {
-		pageSize = -1
-	}
-	if pageNum == 0 {
-		pageNum = 1
-	}
-	data := model.GetCate(pageSize, pageNum)
+	data := model.GetCate()
 	code := errmsg.SUCCES
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,

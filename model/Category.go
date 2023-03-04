@@ -83,9 +83,9 @@ func GetCateBySlug(slug string) (Category, int) {
 }
 
 // get Category list
-func GetCate(pageSize int, pageNum int) []Category {
+func GetCate() []Category {
 	var cate []Category
-	err = db.Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&cate).Error
+	err = db.Where("role = ?", 0).Find(&cate).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil
 	}
