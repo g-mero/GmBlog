@@ -7,8 +7,16 @@
 </div>
 {{template "footer" .}}
 </div>
+<script>
+    window.GLOBAL_CONST_GMERO = {
+        ASSETS_CDN: "{{.SITE.seo_cdn}}"
+    }
+</script>
+
+<!-- 外部依赖js -->
+<script src="{{.SITE.seo_cdn}}/assets/lib/tippy/tippy.min.js"></script>
 <!-- 核心js -->
-<script src="/assets/js/index.min.js"></script>
+<script src="{{.SITE.seo_cdn}}/assets/js/index.min.js"></script>
 
 </body>
 
