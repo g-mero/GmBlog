@@ -6,10 +6,13 @@ import (
 	"gmeroblog/middleware"
 	"gmeroblog/utils/config"
 	"html/template"
+	"io"
+	"os"
 	"path/filepath"
 
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func loadTemplates(templatesDir string) multitemplate.Renderer {
@@ -48,6 +51,17 @@ func loadTemplates(templatesDir string) multitemplate.Renderer {
 }
 
 func InitRouter() {
+	gin.DisableConsoleColor()
+	// 记录日志
+	logFile := &lumberjack.Logger{
+		Filename:   "log/server.log",
+		MaxSize:    2,     // 文件大小MB
+		MaxBackups: 5,     // 最大保留日志文件数量
+		MaxAge:     28,    // 保留天数
+		Compress:   false, // 是否压缩
+	}
+	gin.DefaultWriter = io.MultiWriter(logFile, os.Stdout)
+
 	gin.SetMode(config.AppMode)
 	r := gin.Default()
 	r.Use(middleware.Cors())
