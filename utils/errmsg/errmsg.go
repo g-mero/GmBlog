@@ -29,6 +29,10 @@ const (
 	ERROR_CANT_FIND_TAR_USER    = 5003
 
 	ERROR_CMT_CONTENT_ILLEGAL = 5100
+	// code=6000 for email
+	ERROR_MAIL_SERVER       = 6001
+	ERROR_MAIL_SEND         = 6002
+	ERROR_MAIL_NOT_ENABLIED = 6003
 )
 
 var codeMsg = map[int]string{
@@ -59,6 +63,10 @@ var codeMsg = map[int]string{
 	ERROR_CANT_FIND_TAR_USER:    "没有找到目标用户",
 
 	ERROR_CMT_CONTENT_ILLEGAL: "评论内容不合法",
+
+	ERROR_MAIL_SEND:         "邮件发送失败",
+	ERROR_MAIL_SERVER:       "邮件服务器连接失败",
+	ERROR_MAIL_NOT_ENABLIED: "邮件功能未开启",
 }
 
 func GetErrMsg(code int) string {

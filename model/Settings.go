@@ -51,6 +51,12 @@ var initSettings = []Settings{
 		"admin_github_client_id":     "",
 		"admin_github_client_secret": "",
 	}), Role: "base"},
+	{ID: 5, Name: "mail_settings", Content: jsonString(map[string]string{
+		"mail_host":     "",
+		"mail_port":     "",
+		"mail_username": "",
+		"mail_password": "",
+	}), Role: "base"},
 }
 
 var SITE_SETTING map[string]string
