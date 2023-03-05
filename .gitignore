@@ -1,4 +1,5 @@
 *.exe
+/log/
 /tmp/
 /web/theme/default/assets/js/ts
 *.bat
