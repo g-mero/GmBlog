@@ -7,6 +7,7 @@ import (
 	"gmeroblog/utils/config"
 	"html/template"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -14,6 +15,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
+
+var currTheme = config.Theme
+var themePath = "web/theme/" + currTheme + "/"
 
 func loadTemplates(templatesDir string) multitemplate.Renderer {
 	r := multitemplate.NewRenderer()
@@ -31,7 +35,6 @@ func loadTemplates(templatesDir string) multitemplate.Renderer {
 		var files []string
 		files = append(append(files, include), layoutCopy...) // 确保include在最前面,否则空页面
 		r.AddFromFilesFuncs(filepath.Base(include), template.FuncMap{
-			"Arts":       GetArtList,
 			"Int":        String2Int,
 			"Divide":     Divide,
 			"IntArray":   IntArray,
@@ -50,7 +53,20 @@ func loadTemplates(templatesDir string) multitemplate.Renderer {
 	return r
 }
 
+// 获取主题根目录下的资源文件
+func getFiles() []string {
+	var files []string
+	jsFiles, _ := filepath.Glob(themePath + "*.js")
+	htmlFiles, _ := filepath.Glob(themePath + "*.html")
+	icoFiles, _ := filepath.Glob(themePath + "*.ico")
+	files = append(files, append(append(jsFiles, htmlFiles...), icoFiles...)...)
+	return files
+}
+
 func InitRouter() {
+	if currTheme == "" {
+		log.Fatalln("[Router]主题设置错误！！ 终止")
+	}
 	gin.DisableConsoleColor()
 	// 记录日志
 	logFile := &lumberjack.Logger{
@@ -67,9 +83,18 @@ func InitRouter() {
 	r.Use(middleware.Cors())
 	_ = r.SetTrustedProxies(nil)
 
-	r.HTMLRender = loadTemplates("./web/theme/default/")
+	r.HTMLRender = loadTemplates(themePath)
 
-	r.Static("/assets", "web/theme/default/assets")
+	// 主题assets目录下的资源文件
+	r.Static("/theme/"+currTheme+"/assets", themePath+"assets")
+	// 主题根目录下的资源文件，会被直接路由到服务器根地址
+	files := getFiles()
+	if len(files) > 0 {
+		for _, v := range files {
+			r.StaticFile("/"+filepath.Base(v), v)
+		}
+	}
+
 	{
 		r.GET("/", Index)
 		r.GET("/page/:pn", Index)
@@ -153,4 +178,5 @@ func InitRouter() {
 	}
 
 	_ = r.Run(config.HttpPort)
+
 }

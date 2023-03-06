@@ -3,5 +3,6 @@
     "port": ":3090",
     "jwt_key": "2a3h2h1x",
     "db_file": "data/data.sql3db",
+    "theme": "justy",
     "local_admin": true
 }

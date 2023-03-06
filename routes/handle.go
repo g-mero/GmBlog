@@ -10,11 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type artList struct {
-	Arts  []model.Article
-	Total int
-}
-
 /*
 	 type catetree struct {
 		title string
@@ -29,14 +24,22 @@ func getSets() map[string]string {
 }
 
 func Index(c *gin.Context) {
-	pn := "1"
+	pn, _ := strconv.Atoi(c.Param("pn"))
 	title := getSets()["site_name"]
-	if c.Param("pn") != "" {
-		pn = c.Param("pn")
-		title = "第" + pn + "页-" + title
+	if pn > 0 {
+		title = "第" + strconv.Itoa(pn) + "页-" + title
+	} else {
+		pn = 1
+	}
+	arts, code, total := model.GetArt(8, pn, 0)
+	if code != 200 {
+		Error(c)
+		return
 	}
 	c.HTML(200, "index.tmpl", gin.H{
 		"title": title,
+		"total": total,
+		"arts":  arts,
 		"SITE":  getSets(),
 		"pn":    pn,
 	})
@@ -44,7 +47,15 @@ func Index(c *gin.Context) {
 
 func Article(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	art, _ := model.GetSingleArt(int(id))
+	if id <= 0 {
+		Error(c)
+		return
+	}
+	art, code := model.GetSingleArt(int(id))
+	if code != 200 {
+		Error(c)
+		return
+	}
 	c.HTML(200, "article.tmpl", gin.H{
 		"title":   art.Title + " - " + getSets()["site_name"],
 		"SITE":    getSets(),
@@ -54,26 +65,41 @@ func Article(c *gin.Context) {
 
 func Category(c *gin.Context) {
 	slug := c.Param("slug")
-	pn := c.Query("pagenum")
+	pn, _ := strconv.Atoi(c.Query("pagenum"))
 	var cate model.Category
 	var code int
 	cate, code = model.GetCateBySlug(slug)
 
 	if code != 200 {
 		Error(c)
-	} else {
-		c.HTML(200, "category.tmpl", gin.H{
-			"title": cate.Name + " - " + getSets()["site_name"],
-			"SITE":  getSets(),
-			"pn":    pn,
-			"cate":  cate,
-		})
+		return
 	}
+	if pn <= 0 {
+		pn = 1
+	}
+	arts, code, total := model.GetArt(8, pn, cate.ID)
+
+	if code != 200 {
+		Error(c)
+		return
+	}
+
+	c.HTML(200, "category.tmpl", gin.H{
+		"title": "第" + strconv.Itoa(pn) + "页 - " + cate.Name + " - " + getSets()["site_name"],
+		"SITE":  getSets(),
+		"pn":    pn,
+		"cate":  cate,
+		"arts":  arts,
+		"total": total,
+	})
 
 }
 
 func Error(c *gin.Context) {
-	c.HTML(200, "404.tmpl", nil)
+	c.HTML(200, "404.tmpl", gin.H{
+		"SITE":  getSets(),
+		"title": "404 - " + getSets()["site_name"],
+	})
 }
 
 func Admin(c *gin.Context) {
@@ -84,9 +110,9 @@ func Admin(c *gin.Context) {
 
 // 一下是一些模板函数
 
-func GenPagination(current int, artLIst artList) template.HTML {
+func GenPagination(current int, total int64) template.HTML {
 	const pageSize = 8
-	totalPages := artLIst.Total / pageSize
+	totalPages := int(total / pageSize)
 	if totalPages <= 1 {
 		return ""
 	}
@@ -181,14 +207,6 @@ func FormatTime(time time.Time) string {
 
 func GetCateTree() []model.Catetree {
 	return model.GetCates()
-}
-
-func GetArtList(ps int, pn int, cid int) artList {
-	arts, _, total := model.GetArt(ps, pn, cid)
-	var artList artList
-	artList.Arts = arts
-	artList.Total = int(total)
-	return artList
 }
 
 func String2Int(str string) int {

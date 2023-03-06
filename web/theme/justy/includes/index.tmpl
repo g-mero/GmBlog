@@ -1,31 +1,30 @@
 {{template "up" .}}
-{{template "category" .}}
+{{template "post" .}}
 {{template "down" .}}
 
-{{define "category"}}
-{{$Arts := Arts 8 (Int .pn) .cate.ID}}
-<information id="this-page-info" data-page="category" data-slug="{{.cate.Slug}}" data-gid="{{.cate.GroupId}}">
-</information>
-<div class="article-title d-flex flex-column mb-3 shadow-sm rounded bg-main-color p-2">
+{{define "post"}}
+<div class="article-title d-flex flex-column mb-3 shadow-sm rounded bg-second-color p-2">
     <nav aria-label="breadcrumb" class="opacity-50 d-flex justify-content-between" style="font-size: .8rem;">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="/"><i><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
                             fill="currentColor" viewBox="0 0 16 16">
                             <path
                                 d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146ZM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5Z" />
-                        </svg></i>首页</a></li>
-            <li class="breadcrumb-item active">{{.cate.Name}}</li>
+                        </svg>
+                    </i>首页</a></li>
         </ol>
         <i><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16">
                 <path
                     d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z" />
-            </svg></i>
+            </svg>
+        </i>
     </nav>
-    <h1 class="text-center mb-4 mt-2">分类 {{.cate.Name}} 下的文章</h1>
-    <div class="opacity-50  " style="font-size: .8rem;flex:auto;">{{.cate.Desc}}</div>
+    <h1 class="text-center mb-4 mt-2">没态度，有深度</h1>
+    <div class="opacity-50 " style="font-size: .8rem;flex:auto;">
+    </div>
 </div>
-{{range $Arts.Arts}}
-<div class="card mt-3">
+{{range .arts}}
+<div class="card mb-3 shadow-sm">
     <A class="stretched-link" href="/article/{{.ID}}" role="button">
         <div class="row g-0">
             <div class="col-md-7">
@@ -35,18 +34,21 @@
                         {{.Desc}}
                     </p>
                     <p class="card-text mt-auto">
-                        <small class="text-muted">{{FormatTime .UpdatedAt}}</small>
+                        <small class="text-muted">{{FormatTime .CreatedAt}}</small>
                     </p>
                 </div>
             </div>
             <div class="col-md-5 overflow-hidden d-none d-md-block">
-                <img src="/assets/img/img-loading.gif" data-src='/assets/img/art/{{RandInt 16}}.webp'
-                    class="card-img rounded lazy-load" alt="..." style="height:250px;object-fit: cover"
-                    onerror="this.src='/assets/img/img-404.gif'" />
+                <img src="/theme/justy/assets/img/img-loading.gif"
+                    data-src='/theme/justy/assets/img/art/{{RandInt 16}}.webp' class="card-img rounded lazy-load"
+                    alt="..." style="height:250px;object-fit: cover"
+                    onerror="this.src='/theme/justy/assets/img/img-404.gif';this.onerror=null" />
             </div>
         </div>
     </A>
 </div>
 {{end}}
+
+{{Pagination .pn .total}}
 
 {{end}}

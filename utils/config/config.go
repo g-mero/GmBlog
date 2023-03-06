@@ -13,6 +13,8 @@ var (
 
 	DbFile string
 
+	Theme string
+
 	LocalAdmin bool
 )
 
@@ -23,6 +25,7 @@ type config struct {
 
 	DbFile     string `json:"db_file"`
 	LocalAdmin bool   `json:"local_admin"`
+	Theme      string `json:"theme"`
 }
 
 var result config
@@ -46,6 +49,7 @@ func init() {
 	LoadSqlite()
 
 	LocalAdmin = result.LocalAdmin
+	Theme = result.Theme
 
 	fmt.Println(result)
 }
@@ -56,6 +60,7 @@ func useDefault() {
 	Jwtkey = "2h13hdsa"
 	DbFile = "data/data.sqlite3"
 	LocalAdmin = true
+	Theme = "justy"
 }
 
 func LoadServer() {
