@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"gmeroblog/utils/config"
+	"log"
 	"os"
 	"time"
 
@@ -18,6 +19,8 @@ func con_sqlite3() (*gorm.DB, error) {
 	sdb, err := gorm.Open(sqlite.Open(config.DbFile), &gorm.Config{
 		// 禁用默认事务（提高运行速度）
 		SkipDefaultTransaction: true,
+		// 缓存预编译语句
+		PrepareStmt: true,
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		},
@@ -34,12 +37,11 @@ func InitDb() {
 	}
 
 	// 迁移数据表，在没有数据表结构变更时候，建议注释不执行
-	// _ = db.AutoMigrate(&User{}, &Article{}, &Category{}, &Diary{}, &Settings{}, &Comment{})
+	_ = db.AutoMigrate(&User{}, &Article{}, &Category{}, &Diary{}, &Settings{}, &Comment{}, &Mood{})
 
 	// 数据库基本内容的初始化(理论上只需要运行一次)
 	if InitCate()+InitSet()+InitUser() != 600 {
-		fmt.Println("基础内容初始化失败")
-		os.Exit(1)
+		log.Fatalln("[DB]基础内容初始化失败")
 	}
 
 	sqlDB, _ := db.DB()

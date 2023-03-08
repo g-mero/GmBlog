@@ -44,6 +44,7 @@ func loadTemplates(templatesDir string) multitemplate.Renderer {
 			"STH":        Str2Html,
 			"RandInt":    RundInt,
 			"Pagination": GenPagination,
+			"SET":        GetSet,
 		}, files...)
 	}
 	if config.LocalAdmin {
@@ -140,6 +141,9 @@ func InitRouter() {
 		// 设置
 		admin.PUT("settings", v1.EditSettings)
 
+		// 心情
+		admin.POST("mood/add", v1.AddMood)
+
 	}
 	// 普通用户（不相信写入的任何数据，后台要进行严格检查纠错，读权限可放宽，
 	// 应该对api使用进行限额）
@@ -173,6 +177,9 @@ func InitRouter() {
 		router.GET("article/:id", v1.GetSingleArt)
 		// 评论
 		router.GET("comment_limit", v1.GetCommentsLimit)
+
+		// 心情
+		router.GET("mood/rand", v1.GetRandMood)
 
 		router.GET("settings", v1.GetSettings)
 	}

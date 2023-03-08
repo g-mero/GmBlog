@@ -6,6 +6,7 @@ import (
 	"gmeroblog/model"
 	"gmeroblog/utils/cache"
 	"gmeroblog/utils/errmsg"
+	"gmeroblog/utils/static"
 	"net/http"
 	"net/url"
 
@@ -57,7 +58,7 @@ func Logout(c *gin.Context) {
 // github auth
 func GithubLogin(c *gin.Context) {
 	// 检查是否开启GITHUB认证
-	if model.SITE_SETTING["admin_github_client_id"] == "" {
+	if static.Get("admin_github_client_id") == "" {
 		c.HTML(200, "githubAuth", gin.H{
 			"title":  "错误",
 			"info":   "服务器未开启github认证",
@@ -122,8 +123,8 @@ func get_github_token(c *gin.Context) string {
 	gcode := c.Query("code")
 	accessTokenURL, _ := url.Parse("https://github.com/login/oauth/access_token")
 	values := url.Values{}
-	values.Set("client_id", model.SITE_SETTING["admin_github_client_id"])
-	values.Set("client_secret", model.SITE_SETTING["admin_github_client_secret"])
+	values.Set("client_id", static.Get("admin_github_client_id"))
+	values.Set("client_secret", static.Get("admin_github_client_secret"))
 	values.Set("code", gcode)
 	accessTokenURL.RawQuery = values.Encode()
 	req, err := http.NewRequest("POST", accessTokenURL.String(), nil)

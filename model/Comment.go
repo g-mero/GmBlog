@@ -102,7 +102,7 @@ func AddComment(data *Comment) int {
 
 // 删除评论
 func DelComment(id int) int {
-	err := db.Where("id = ?", id).Delete(&cate{}).Error
+	err := db.Where("id = ?", id).Delete(&Comment {}).Error
 	if err != nil {
 		return errmsg.ERROR
 	}

@@ -2,6 +2,7 @@ package routes
 
 import (
 	"gmeroblog/model"
+	"gmeroblog/utils/static"
 	"html/template"
 	"math/rand"
 	"strconv"
@@ -10,22 +11,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-/*
-	 type catetree struct {
-		title string
-		to string
-		icon string
-		children []catetree
-	}
-*/
-
-func getSets() map[string]string {
-	return model.SITE_SETTING
+// 获取设置项
+func GetSet(k string) string {
+	return static.Get(k)
 }
 
+// 首页
 func Index(c *gin.Context) {
 	pn, _ := strconv.Atoi(c.Param("pn"))
-	title := getSets()["site_name"]
+	title := GetSet("site_name")
 	if pn > 0 {
 		title = "第" + strconv.Itoa(pn) + "页-" + title
 	} else {
@@ -40,11 +34,11 @@ func Index(c *gin.Context) {
 		"title": title,
 		"total": total,
 		"arts":  arts,
-		"SITE":  getSets(),
 		"pn":    pn,
 	})
 }
 
+// 文章页
 func Article(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	if id <= 0 {
@@ -57,12 +51,12 @@ func Article(c *gin.Context) {
 		return
 	}
 	c.HTML(200, "article.tmpl", gin.H{
-		"title":   art.Title + " - " + getSets()["site_name"],
-		"SITE":    getSets(),
+		"title":   art.Title + " - " + GetSet("site_name"),
 		"article": art,
 	})
 }
 
+// 分类页
 func Category(c *gin.Context) {
 	slug := c.Param("slug")
 	pn, _ := strconv.Atoi(c.Query("pagenum"))
@@ -85,8 +79,7 @@ func Category(c *gin.Context) {
 	}
 
 	c.HTML(200, "category.tmpl", gin.H{
-		"title": "第" + strconv.Itoa(pn) + "页 - " + cate.Name + " - " + getSets()["site_name"],
-		"SITE":  getSets(),
+		"title": "第" + strconv.Itoa(pn) + "页 - " + cate.Name + " - " + GetSet("site_name"),
 		"pn":    pn,
 		"cate":  cate,
 		"arts":  arts,
@@ -95,21 +88,23 @@ func Category(c *gin.Context) {
 
 }
 
+// 错误页
 func Error(c *gin.Context) {
 	c.HTML(200, "404.tmpl", gin.H{
-		"SITE":  getSets(),
-		"title": "404 - " + getSets()["site_name"],
+		"title": "404 - " + GetSet("site_name"),
 	})
 }
 
+// 管理后台
 func Admin(c *gin.Context) {
 	c.HTML(200, "admin", gin.H{
-		"title": "后台---" + getSets()["site_name"],
+		"title": "后台---" + GetSet("site_name"),
 	})
 }
 
 // 一下是一些模板函数
 
+// 生成分页
 func GenPagination(current int, total int64) template.HTML {
 	const pageSize = 8
 	totalPages := int(total / pageSize)
@@ -197,6 +192,7 @@ func GenPagination(current int, total int64) template.HTML {
 	return template.HTML(result)
 }
 
+// string转成html
 func Str2Html(text string) template.HTML {
 	return template.HTML(text)
 }

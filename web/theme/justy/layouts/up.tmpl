@@ -5,15 +5,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="{{.SITE.seo_desc}}">
+    <meta name="description" content="{{SET `seo_desc`}}">
     <meta name="author" content="Gmero|歌梦罗">
-    <meta name="keywords" content="{{.SITE.seo_keywords}}">
+    <meta name="keywords" content="{{SET `seo_keywords`}}">
     <meta name=”copyright” content=”Gmero”>
     <meta name="generator" content="Go with Gin">
     <meta name="template" content="GmeroBlog">
     <title>{{.title}}</title>
-    <link rel="stylesheet" href="{{.SITE.seo_cdn}}/theme/justy/assets/css/justy.min.css" type="text/css" />
-    <link rel="stylesheet" href="{{.SITE.seo_cdn}}/theme/justy/assets/css/index.min.css" type="text/css" />
+    <link rel="stylesheet" href="{{SET `seo_cdn`}}/theme/justy/assets/css/justy.min.css" type="text/css" />
+    <link rel="stylesheet" href="{{SET `seo_cdn`}}/theme/justy/assets/css/index.min.css" type="text/css" />
     <link rel="shortcut icon" href="/favicon.ico">
 </head>
 
@@ -22,7 +22,8 @@
         <div class="container-xl">
             {{ template "header" .}}
             <div class="main-area h-100">
-                <div class="aside-left col-2 h-100 position-fixed rounded-top scroll-hide" style="overflow-y: auto">
+                <div class="aside-left col-2 h-100 shadow-sm position-fixed rounded-top scroll-hide"
+                    style="overflow-y: auto">
                     {{template "aside-left" . }}
                 </div>
                 <div class="row main-contents w-100 m-0">

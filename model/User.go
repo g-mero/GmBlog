@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"gmeroblog/utils/errmsg"
 	"gmeroblog/utils/rand"
+	"gmeroblog/utils/static"
 	"io"
 	"log"
 	"net/http"
@@ -38,8 +39,8 @@ func InitUser() int {
 		user.Nickname = "admin"
 		user.Role = 1
 
-		if SITE_SETTING["admin_github_id"] != "" {
-			user.GithubId = SITE_SETTING["admin_github_id"]
+		if static.Get("admin_github_id") != "" {
+			user.GithubId = static.Get("admin_github_id")
 		}
 
 		code = CreateUser(&user)

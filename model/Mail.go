@@ -2,6 +2,7 @@ package model
 
 import (
 	"gmeroblog/utils/errmsg"
+	"gmeroblog/utils/static"
 	"log"
 	"strconv"
 
@@ -16,16 +17,16 @@ type smtpInfo struct {
 }
 
 func getSmtpInfo() (smtp smtpInfo) {
-	smtp.host = SITE_SETTING["mail_host"]
-	smtp.username = SITE_SETTING["mail_username"]
-	smtp.password = SITE_SETTING["mail_password"]
-	smtp.port, _ = strconv.Atoi(SITE_SETTING["mail_port"])
+	smtp.host = static.Get("mail_host")
+	smtp.username = static.Get("mail_username")
+	smtp.password = static.Get("mail_password")
+	smtp.port, _ = strconv.Atoi(static.Get("mail_port"))
 
 	return smtp
 }
 
 func Enabled() bool {
-	return SITE_SETTING["mail_host"] != ""
+	return static.Get("mail_host") != ""
 }
 
 func newSMTPClient() (*mail.SMTPClient, error) {

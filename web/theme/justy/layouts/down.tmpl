@@ -7,18 +7,46 @@
 </div>
 {{template "footer" .}}
 </div>
+<!-- 前置JS -->
 <script>
     window.GLOBAL_CONST_GMERO = {
-        ASSETS_CDN: "{{.SITE.seo_cdn}}",
+        ASSETS_CDN: "{{SET `seo_cdn`}}",
 
-        GITHUB_CLIENT_ID: "{{.SITE.admin_github_client_id}}"
+        GITHUB_CLIENT_ID: "{{SET `admin_github_client_id`}}"
     }
 </script>
 
 <!-- 外部依赖js -->
-<script src="{{.SITE.seo_cdn}}/theme/justy/assets/lib/tippy/tippy.min.js"></script>
+<script src="{{SET `seo_cdn`}}/theme/justy/assets/lib/tippy/tippy.min.js"></script>
 <!-- 核心js -->
-<script src="{{.SITE.seo_cdn}}/theme/justy/assets/js/index.min.js"></script>
+<script src="{{SET `seo_cdn`}}/theme/justy/assets/js/index.min.js"></script>
+
+<!-- 后置JS -->
+<script>
+    // 处理serviceWorker
+    const regServiceWorker = (bool = false) => {
+        if ('serviceWorker' in navigator) {
+            if (bool) {
+                navigator.serviceWorker.register('/service-worker.js')
+            } else {
+                navigator.serviceWorker.getRegistrations().then((regs) => {
+                    regs.forEach((reg) => {
+                        reg
+                            .unregister()
+                            .then(() => {
+                                Qmsg.success(`SW注销成功`)
+                            })
+                            .catch((res) => {
+                                Qmsg.error(`SW注销失败, 您可以手动注销。(${res})`)
+                            })
+                    })
+                })
+            }
+        }
+    }
+
+    regServiceWorker("{{SET `seo_sw `}}" === "1")
+</script>
 
 </body>
 

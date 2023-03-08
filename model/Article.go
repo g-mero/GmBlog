@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"gmeroblog/utils/errmsg"
 	"time"
 
@@ -85,7 +84,6 @@ func GetArt(pageSize int, pageNum int, cid int) ([]Article, int, int64) {
 		err = db.Model(&artList).Where("cid = ?", cid).Count(&total).Order("id DESC").Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&artList).Error
 	}
 	if err != nil {
-		fmt.Println(err)
 		return nil, errmsg.ERROR, 0
 	}
 	return artList, errmsg.SUCCES, total

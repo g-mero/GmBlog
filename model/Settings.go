@@ -2,8 +2,8 @@ package model
 
 import (
 	"encoding/json"
-	"fmt"
 	"gmeroblog/utils/errmsg"
+	"gmeroblog/utils/static"
 
 	"gorm.io/gorm"
 )
@@ -35,11 +35,11 @@ var initSettings = []Settings{
 		"seo_desc":     "a blog",
 		"seo_keywords": "blog,some",
 		"seo_footer": `<div class="clearfix px-1"><div class="float-end">
-		<a href="https://www.gmero.com" data-bs-toggle="tooltip" data-bs-placement="top"
-		title="Gmero'blog" target="_blank"><img data-src="https://img.shields.io/badge/Powered-Gmero-brightgreen" alt="" class="lazy-load" />
+		<a href="https://www.gmero.com" aria-label="Gmero'blog" target="_blank"><img data-src="https://img.shields.io/badge/Powered-Gmero-brightgreen" alt class="lazy-load" />
 		</a>
 		</div></div>`,
 		"seo_cdn": "",
+		"seo_sw":  "0",
 	}), Role: "base"},
 	{ID: 3, Name: "art_settings", Content: jsonString(map[string]string{
 		"art_recommend": "",
@@ -59,36 +59,25 @@ var initSettings = []Settings{
 	}), Role: "base"},
 }
 
-var SITE_SETTING map[string]string
-
 func jsonString(arr map[string]string) string {
 	bytes, _ := json.Marshal(arr)
 	return string(bytes)
 }
 
-func mapConnect(sets ...OutSettings) map[string]string {
-	out := make(map[string]string)
-
+func saveSets(sets ...OutSettings) {
 	for _, set := range sets {
-		for k, v := range set.Content {
-			out[k] = v
-		}
+		updateSet(set.Content)
 	}
-	fmt.Println(out)
-
-	return out
 }
 
-func InitSet() int {
-	var tmp Settings
-	err := db.Where("id = ?", "1").First(&tmp).Error
-	if err == gorm.ErrRecordNotFound || tmp.Name != "base_settings" {
-		err = db.Create(&initSettings).Error
-		if err != nil {
-			return errmsg.ERROR
-		}
+func updateSet(content map[string]string) {
+	for k, v := range content {
+		static.Set(k, v)
 	}
+}
 
+// 初始化，读取数据库并检查设置项是否完整，最后写入内存
+func InitSet() int {
 	var setInit = func(set Settings) int {
 		var tmp Settings
 		err := db.Where("id = ?", set.ID).First(&tmp).Error
@@ -106,8 +95,8 @@ func InitSet() int {
 			return errmsg.ERROR
 		}
 	}
-
-	SITE_SETTING = mapConnect(getsets("base")...)
+	// 写入内存
+	saveSets(getsets("base")...)
 	return errmsg.SUCCES
 }
 
@@ -149,6 +138,6 @@ func EditSettings(data OutSettings) int {
 	if err != nil {
 		return errmsg.ERROR
 	}
-	InitSet()
+	updateSet(data.Content)
 	return errmsg.SUCCES
 }
