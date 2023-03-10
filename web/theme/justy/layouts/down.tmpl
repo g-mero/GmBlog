@@ -10,16 +10,16 @@
 <!-- 前置JS -->
 <script>
     window.GLOBAL_CONST_GMERO = {
-        ASSETS_CDN: "{{SET `seo_cdn`}}",
+        ASSETS_CDN: "{{THEME `base_cdn`}}",
 
         GITHUB_CLIENT_ID: "{{SET `admin_github_client_id`}}"
     }
 </script>
 
 <!-- 外部依赖js -->
-<script src="{{SET `seo_cdn`}}/theme/justy/assets/lib/tippy/tippy.min.js"></script>
+<script src="{{THEME `base_cdn`}}/theme/justy/assets/lib/tippy/tippy.min.js"></script>
 <!-- 核心js -->
-<script src="{{SET `seo_cdn`}}/theme/justy/assets/js/index.min.js"></script>
+<script src="{{THEME `base_cdn`}}/theme/justy/assets/js/index.min.js"></script>
 
 <!-- 后置JS -->
 <script>
@@ -45,7 +45,7 @@
         }
     }
 
-    regServiceWorker("{{SET `seo_sw `}}" === "1")
+    regServiceWorker("{{THEME `base_enable_sw`}}" === "1")
 </script>
 
 </body>

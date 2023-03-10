@@ -11,9 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 获取设置项
+// 获取全局设置项
 func GetSet(k string) string {
-	return static.Get(k)
+	return static.Get("SITE_" + k)
+}
+
+// 获取主题设置项
+func GetThemeSet(k string) string {
+	return static.Get("THEME_" + model.ThemeName + "_" + k)
 }
 
 // 首页

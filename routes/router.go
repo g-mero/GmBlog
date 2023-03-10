@@ -45,6 +45,7 @@ func loadTemplates(templatesDir string) multitemplate.Renderer {
 			"RandInt":    RundInt,
 			"Pagination": GenPagination,
 			"SET":        GetSet,
+			"THEME":      GetThemeSet,
 		}, files...)
 	}
 	if config.LocalAdmin {
@@ -181,7 +182,14 @@ func InitRouter() {
 		// 心情
 		router.GET("mood/rand", v1.GetRandMood)
 
+		// 主题
+		router.GET("theme/info", v1.GetThemeInfo)
+		router.GET("theme/set", v1.GetThemeSettings)
+		router.POST("theme/set", v1.EditThemeSettings)
+
+		// 设置
 		router.GET("settings", v1.GetSettings)
+
 	}
 
 	_ = r.Run(config.HttpPort)

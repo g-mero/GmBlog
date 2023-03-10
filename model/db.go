@@ -44,6 +44,8 @@ func InitDb() {
 		log.Fatalln("[DB]基础内容初始化失败")
 	}
 
+	InitTheme()
+
 	sqlDB, _ := db.DB()
 
 	// SetMaxIdleConns 用于设置连接池中空闲连接的最大数量。

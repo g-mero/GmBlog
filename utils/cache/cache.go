@@ -11,10 +11,21 @@ func Set(key string, value []byte) {
 
 // 获取值，不存在则返回nil
 func Get(key string) []byte {
-	if v, exist := cache.HasGet(nil, []byte(key)); exist || len(v) != 0 {
+	if v, exist := cache.HasGet(nil, []byte(key)); exist && len(v) != 0 {
 		return v
 	} else {
 		return nil
+	}
+}
+
+// 获取或者创建
+func GetSet(key string, value []byte) []byte {
+	var res []byte
+	if res = Get(key); res != nil {
+		return res
+	} else {
+		Set(key, value)
+		return value
 	}
 }
 

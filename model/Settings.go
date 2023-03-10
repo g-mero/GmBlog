@@ -38,8 +38,6 @@ var initSettings = []Settings{
 		<a href="https://www.gmero.com" aria-label="Gmero'blog" target="_blank"><img data-src="https://img.shields.io/badge/Powered-Gmero-brightgreen" alt class="lazy-load" />
 		</a>
 		</div></div>`,
-		"seo_cdn": "",
-		"seo_sw":  "0",
 	}), Role: "base"},
 	{ID: 3, Name: "art_settings", Content: jsonString(map[string]string{
 		"art_recommend": "",
@@ -72,7 +70,7 @@ func saveSets(sets ...OutSettings) {
 
 func updateSet(content map[string]string) {
 	for k, v := range content {
-		static.Set(k, v)
+		static.Set("BASE_"+k, v)
 	}
 }
 
