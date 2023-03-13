@@ -46,6 +46,7 @@ func loadTemplates(templatesDir string) multitemplate.Renderer {
 			"SET":        GetSet,
 			"THEME":      GetThemeSet,
 			"MOOD":       GetAMood,
+			"MOD":        Mod,
 		}, files...)
 	}
 	if config.LocalAdmin {

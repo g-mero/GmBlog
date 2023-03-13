@@ -228,6 +228,10 @@ func Divide(a int, b int) int {
 	}
 }
 
+func Mod(a int, b int) int {
+	return a % b
+}
+
 func IntArray(a int) []int {
 	var res []int
 	for i := 0; i < a; i++ {
