@@ -31,7 +31,7 @@ func GetThemeSettings(c *gin.Context) {
 
 // edit theme settings
 func EditThemeSettings(c *gin.Context) {
-	var data model.ThemeSetting
+	var data model.OutSettings
 	c.ShouldBindJSON(&data)
 	code := model.EditThemeSetting(data)
 	c.JSON(http.StatusOK, gin.H{

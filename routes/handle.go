@@ -13,7 +13,12 @@ import (
 
 // 获取全局设置项
 func GetSet(k string) string {
-	return static.Get("SITE_" + k)
+	return static.Get("BASE_" + k)
+}
+
+// 获取一条Mood
+func GetAMood() string {
+	return model.GetMoodRand()
 }
 
 // 获取主题设置项

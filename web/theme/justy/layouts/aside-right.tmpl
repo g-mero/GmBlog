@@ -38,8 +38,8 @@
 
 {{ define "aside-right" }}
 <div class="bg-main-color h-100 shadow-sm w-100 right-aside rounded-top p-3">
-    {{if not (eq (SET `site_notice`) "")}}
-    {{template "sider-notice" (SET `site_notice`)}}
+    {{if not (eq (THEME `base_notice`) "")}}
+    {{template "sider-notice" (THEME `base_notice`)}}
     {{end}}
     <div class="article-toc mt-3 position-sticky d-none" style="top:100px">
         <div class="divider"></div>

@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	v1 "gmeroblog/api/v1"
 	"gmeroblog/middleware"
 	"gmeroblog/utils/config"
@@ -46,6 +45,7 @@ func loadTemplates(templatesDir string) multitemplate.Renderer {
 			"Pagination": GenPagination,
 			"SET":        GetSet,
 			"THEME":      GetThemeSet,
+			"MOOD":       GetAMood,
 		}, files...)
 	}
 	if config.LocalAdmin {
@@ -102,8 +102,6 @@ func InitRouter() {
 		r.GET("/page/:pn", Index)
 		r.GET("/article/:id", Article)
 		r.GET("/category/:slug", Category)
-
-		fmt.Println(config.LocalAdmin)
 
 		// 管理界面
 		if config.LocalAdmin {
@@ -185,7 +183,7 @@ func InitRouter() {
 		// 主题
 		router.GET("theme/info", v1.GetThemeInfo)
 		router.GET("theme/set", v1.GetThemeSettings)
-		router.POST("theme/set", v1.EditThemeSettings)
+		router.PUT("theme/set", v1.EditThemeSettings)
 
 		// 设置
 		router.GET("settings", v1.GetSettings)

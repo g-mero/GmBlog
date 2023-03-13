@@ -1,17 +1,53 @@
 - name: base
   label: 基本
   content:
-    - name: enable_sw
-      value: "0"
-      label: 是否开启ServiceWorker
-      desc:
-      type: switch
+    - name: username
+      value: Gmero
+      label: 博主名称（这会显示再首页）
+      type: text
+    - name: avatar
+      value: https://avatars.githubusercontent.com/u/0
+      label: 头像地址
+      type: text
+    - name: one_word
+      value: 我喜欢你
+      label: 一句话
+      type: text
+      desc: 一句简单的话描述下你把，这会显示在你的名字下面
+    - name: notice
+      value: 欢迎来到GmBlog
+      label: 站点公告
+      desc: 这会显示在首页，留空则不显示
+      type: textarea
     - name: cdn
       value:
       label: 静态资源CDN
       desc: 留空则不使用cdn
       type: text
     - name: footer
-      value:
+      value: "\u003cdiv class=\"clearfix px-1\"\u003e\u003cdiv class=\"float-start\"\u003e\u003ca href=\"https://beian.miit.gov.cn/\" target=\"_blank\" aria-label=\"Go to beian\"\u003e\u003cimg\n                    data-src=\"https://img.shields.io/badge/%E7%9A%96ICP%E5%A4%87-20010301%E5%8F%B7-blue\" alt\n                    class=\"lazy-load\"\u003e\u003c/a\u003e\u003c/div\u003e\u003cdiv class=\"float-end\"\u003e\u003ca href=\"https://www.gmero.com\" aria-label=\"Go to GmBlog's home page\" target=\"_blank\" data-tippy-content=\"Tooltip\"\u003e\n\t\t\u003cimg data-src=\"https://img.shields.io/badge/Powered-Gmero-brightgreen\" class=\"lazy-load\" alt /\u003e\n\t\u003c/a\u003e\u003c/div\u003e\u003c/div\u003e"
       label: 页脚html内容
       type: textarea
+
+- name: content
+  label: 内容设置
+  content:
+    - name: top_arts
+      value:
+      label: 置顶文章
+      type: text
+      desc: 这些文章会在首页置顶，你可以设置多个，用英文的逗号隔开
+    - name: recommend_arts
+      value:
+      label: 推荐文章
+      type: text
+      desc: 与上面一样这些文章会在侧边栏显示出来
+
+- name: advance
+  label: 进阶
+  content:
+    - name: enable_sw
+      value: "0"
+      label: 是否开启ServiceWorker
+      desc: 如果你不清楚ServiceWorker是什么，那么请不要打开
+      type: switch

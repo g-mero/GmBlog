@@ -23,38 +23,27 @@ type OutSettings struct {
 
 var initSettings = []Settings{
 	{ID: 1, Name: "base_settings", Content: jsonString(map[string]string{
-		"site_name":        "Gmero's Blog",
-		"site_url":         "https://www.gmero.com",
-		"site_logo":        "/assets/img/logo.svg",
-		"site_username":    "GmBlog",
-		"site_user_avatar": "https://avatars.githubusercontent.com/u/0",
-		"site_user_desc":   "Hello world",
-		"site_notice":      "GmBlog欢迎你",
+		"site_name": "Gmero's Blog",
+		"site_url":  "https://www.gmero.com",
+		"site_logo": "/assets/img/logo.svg",
 	}), Role: "base"},
 	{ID: 2, Name: "seo_settings", Content: jsonString(map[string]string{
 		"seo_desc":     "a blog",
 		"seo_keywords": "blog,some",
-		"seo_footer": `<div class="clearfix px-1"><div class="float-end">
-		<a href="https://www.gmero.com" aria-label="Gmero'blog" target="_blank"><img data-src="https://img.shields.io/badge/Powered-Gmero-brightgreen" alt class="lazy-load" />
-		</a>
-		</div></div>`,
 	}), Role: "base"},
-	{ID: 3, Name: "art_settings", Content: jsonString(map[string]string{
-		"art_recommend": "",
-		"art_top":       "",
-	}), Role: "base"},
-	{ID: 4, Name: "admin_settings", Content: jsonString(map[string]string{
+	{ID: 3, Name: "admin_settings", Content: jsonString(map[string]string{
 		"admin_path":                 "admin",
 		"admin_github_id":            "",
 		"admin_github_client_id":     "",
 		"admin_github_client_secret": "",
 	}), Role: "base"},
-	{ID: 5, Name: "mail_settings", Content: jsonString(map[string]string{
+	{ID: 4, Name: "mail_settings", Content: jsonString(map[string]string{
 		"mail_host":     "",
-		"mail_port":     "",
+		"mail_port":     "25",
 		"mail_username": "",
 		"mail_password": "",
 	}), Role: "base"},
+	{ID: 10, Name: "stay_for_base", Content: "", Role: "base_stay"},
 }
 
 func jsonString(arr map[string]string) string {
@@ -79,8 +68,15 @@ func InitSet() int {
 	var setInit = func(set Settings) int {
 		var tmp Settings
 		err := db.Where("id = ?", set.ID).First(&tmp).Error
-		if err == gorm.ErrRecordNotFound || tmp.Name != set.Name {
-			err = db.Create(&set).Error
+		if err == gorm.ErrRecordNotFound {
+			err := db.Create(&set).Error
+			if err != nil {
+				return errmsg.ERROR
+			}
+		}
+		// 修复create失败的问题
+		if tmp.Name != set.Name {
+			err := db.Save(&set).Error
 			if err != nil {
 				return errmsg.ERROR
 			}

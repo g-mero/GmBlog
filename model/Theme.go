@@ -1,7 +1,6 @@
 package model
 
 import (
-	"encoding/json"
 	"gmeroblog/utils/config"
 	"gmeroblog/utils/errmsg"
 	"gmeroblog/utils/static"
@@ -29,6 +28,12 @@ type ThemeSetting struct {
 	Content []oneSet `yaml:"content" json:"content"`
 }
 
+// api输出类型
+type OutThemeSetting struct {
+	ID int `json:"id"`
+	ThemeSetting
+}
+
 type oneSet struct {
 	Name  string `yaml:"name" json:"name"`
 	Value string `yaml:"value" json:"value"`
@@ -38,6 +43,7 @@ type oneSet struct {
 }
 
 var ThemeName = getInfo().Name
+var themeRole = "Theme_" + ThemeName
 var themePath = "web/theme/" + config.Theme + "/"
 var infoPath = themePath + "Theme.yaml"
 var setPath = themePath + "Settings.yaml"
@@ -52,23 +58,27 @@ func InitTheme() {
 	}
 	static.Set("theme_info", string(infoByte))
 
-	sets, code := GetThemeSettings()
+	sets := getThemeSetFormFile()
 
-	if code != errmsg.SUCCES {
+	if sets == nil {
 		log.Fatal("[Theme]", "获取设置项失败")
 	}
 
 	if initThemeDb(sets) != errmsg.SUCCES {
 		log.Fatal("[Theme]", "初始化数据库失败")
 	}
+
+	updateThemeSetWithDB(sets)
 }
 
+// 初始化数据库
 func initThemeDb(sets []ThemeSetting) int {
-	var setInit = func(set Settings) int {
+	var setInit = func(set ThemeSetting) int {
 		var tmp Settings
-		err := db.Where("name = ? AND role = ?", set.Name, set.Role).First(&tmp).Error
+		err := db.Where("name = ? AND role = ?", set.Name, themeRole).First(&tmp).Error
 		if err == gorm.ErrRecordNotFound {
-			err = db.Create(&set).Error
+			dbSet := themeSetToSettings(set)
+			err = db.Create(&dbSet).Error
 			if err != nil {
 				return errmsg.ERROR
 			}
@@ -76,22 +86,8 @@ func initThemeDb(sets []ThemeSetting) int {
 		return errmsg.SUCCES
 	}
 
-	role := "theme_" + getInfo().Name
-	var themeSetsDb []Settings
-	for _, v := range sets {
-		var tmp Settings
-		tmp.Name = v.Name
-		tmp.Role = role
-		bytes, _ := json.Marshal(v.Content)
-		tmp.Content = string(bytes)
-		themeSetsDb = append(themeSetsDb, tmp)
-		// 写入内存
-		saveThemeSetToStatic(v)
-	}
-
-	// 数据库处理
-	for _, v := range themeSetsDb {
-		if setInit(v) != errmsg.SUCCES {
+	for _, ts := range sets {
+		if setInit(ts) == errmsg.ERROR {
 			return errmsg.ERROR
 		}
 	}
@@ -116,55 +112,95 @@ func getInfo() ThemeInfo {
 	return info
 }
 
-func GetThemeSettings() ([]ThemeSetting, int) {
+// 从文件中获取主题设置项
+func getThemeSetFormFile() []ThemeSetting {
+	// 文件中读取到的设置项
 	var sets []ThemeSetting
 
 	file, err := os.ReadFile(setPath)
 	if err != nil {
-		return nil, errmsg.ERROR
+		return nil
 	}
 
+	// 从文件中读取数据(此时value还是默认值，需要与数据库进行比对)
 	if err := yaml.Unmarshal(file, &sets); err != nil {
+		return nil
+	}
+
+	return sets
+}
+
+// 将ThemeSetting类型转化为Settings类型
+func themeSetToSettings(themeSet ThemeSetting) Settings {
+	var set Settings
+
+	set.ID = 0
+	set.Name = themeSet.Name
+	set.Role = themeRole
+	set.Content = jsonString(oneSetsToMap(themeSet.Content))
+	return set
+
+}
+
+// 将oneSet数组转Map
+func oneSetsToMap(sets []oneSet) map[string]string {
+	setMap := make(map[string]string, len(sets))
+	for _, v := range sets {
+		setMap[v.Name] = v.Value
+	}
+	return setMap
+}
+
+// 将文件设置项与数据库中进行比对更新, 并写入内存
+func updateThemeSetWithDB(fileSets []ThemeSetting) ([]OutThemeSetting, int) {
+	// 从数据库中读取设置项
+	dbSets, code := GetSettings(themeRole)
+	if code != errmsg.SUCCES {
+		// 数据库读取失败
 		return nil, errmsg.ERROR
 	}
 
-	// 将数据库中的数据与设置项合并传值
-	var dbSets []Settings
-	var newSets []ThemeSetting
-
-	if err := db.Where("role = ?", "theme_"+ThemeName).Find(&dbSets).Error; err != nil {
-		return nil, errmsg.ERROR
-	}
-
-	for _, v := range dbSets {
-		var tmp ThemeSetting
-		tmp.Name = v.Name
-		var cont []oneSet
-		json.Unmarshal([]byte(v.Content), &cont)
-		tmp.Content = cont
-		newSets = append(newSets, tmp)
-	}
-
-	var assign = func(old []oneSet, new []oneSet) {
+	// 将数据进行比对更新，注意这里会直接修改OLD
+	var assign = func(old []oneSet, new map[string]string) {
 		for k, v := range old {
-			for _, ve := range new {
-				if v.Name == ve.Name {
-					old[k].Value = ve.Value
+			for ke, ve := range new {
+				if v.Name == ke {
+					old[k].Value = ve
 				}
 			}
 		}
 	}
 
-	// 替换更新
-	for k, v := range sets {
-		for _, ve := range newSets {
+	var outThemeSettings []OutThemeSetting
+
+	// 开始比对
+	for k, v := range fileSets {
+		for _, ve := range dbSets {
 			if v.Name == ve.Name {
-				assign(sets[k].Content, ve.Content)
+				assign(fileSets[k].Content, ve.Content)
+				var tmp OutThemeSetting
+				tmp.ThemeSetting = fileSets[k]
+				saveThemeSetToStatic(ve)
+				tmp.ID = ve.ID
+				// 转化成out格式
+				outThemeSettings = append(outThemeSettings, tmp)
 			}
 		}
 	}
 
-	return sets, errmsg.SUCCES
+	return outThemeSettings, errmsg.SUCCES
+}
+
+// 获取主题的所有设置项
+func GetThemeSettings() ([]OutThemeSetting, int) {
+	// 文件中读取到的设置项
+	sets := getThemeSetFormFile()
+
+	if sets == nil {
+		return nil, errmsg.ERROR
+	}
+
+	return updateThemeSetWithDB(sets)
 }
 
 // 从内存获取主题信息
@@ -182,35 +218,24 @@ func GetThemeInfo() (ThemeInfo, int) {
 }
 
 // 保存设置项到内存
-func saveThemeSetToStatic(data ThemeSetting) {
-	for _, v := range data.Content {
-		static.Set("theme_"+data.Name+"_"+v.Name, v.Value)
+func saveThemeSetToStatic(data OutSettings) {
+	for k, v := range data.Content {
+		static.Set("THEME_"+ThemeName+"_"+data.Name+"_"+k, v)
 	}
-}
-
-// 保存设置项到数据库
-func saveThemeSetToDB(data ThemeSetting) int {
-	var set Settings
-	set.Name = data.Name
-	set.Role = "theme_" + getInfo().Name
-
-	bytes, _ := json.Marshal(data.Content)
-	set.Content = string(bytes)
-
-	if err := db.Where("name = ? AND role = ?", set.Name, set.Role).Save(&set).Error; err != nil {
-		return errmsg.ERROR
-	}
-
-	return errmsg.SUCCES
 }
 
 // 修改设置项
-func EditThemeSetting(data ThemeSetting) int {
+func EditThemeSetting(data OutSettings) int {
 	// 写入数据库
-	if saveThemeSetToDB(data) != errmsg.SUCCES {
+	var set Settings
+	if err := db.Where("id = ?", data.ID).First(&set).Error; err != nil || set.Name != data.Name || set.Role != themeRole {
 		return errmsg.ERROR
 	}
-	// 写入内存
+	set.Content = jsonString(data.Content)
+	err := db.Save(&set).Error
+	if err != nil {
+		return errmsg.ERROR
+	}
 	saveThemeSetToStatic(data)
 	return errmsg.SUCCES
 }
